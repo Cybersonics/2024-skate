@@ -10,7 +10,7 @@ import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.NavXGyro;
 
 import frc.robot.commands.Autos;
-
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -44,8 +44,10 @@ public class RobotContainer {
   public static NavXGyro _gyro = NavXGyro.getInstance(); // This must be called before Drive as it is used by the Drive
   public static Drive _drive = Drive.getInstance(_gyro);
   
-  public final CommandJoystick leftStick = new CommandJoystick(OperatorConstants.LeftStick);
-  public final CommandJoystick rightStick = new CommandJoystick(OperatorConstants.RightStick);
+  // public final CommandJoystick leftStick = new CommandJoystick(OperatorConstants.LeftStick);
+  // public final CommandJoystick rightStick = new CommandJoystick(OperatorConstants.RightStick);
+
+  public final CommandXboxController xboxController = new CommandXboxController(2);
 
   // Setup Sendable chooser for picking autonomous program in SmartDashboard
   private SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -63,7 +65,9 @@ public class RobotContainer {
 
     CommandScheduler.getInstance()
       //.setDefaultCommand(_drive, new DriveCommand(_drive, driveController, _gyro));
-      .setDefaultCommand(_drive, new DriveCommand(_drive, leftStick, rightStick, _gyro));
+      // .setDefaultCommand(_drive, new DriveCommand(_drive, leftStick, rightStick, _gyro));      
+      .setDefaultCommand(_drive, new DriveCommand(_drive, xboxController, _gyro));
+
 
 
     // Configure Autonomous Options
@@ -90,9 +94,18 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Reset NavX
-    leftStick.button(7).onTrue(new InstantCommand(() -> _gyro.zeroNavHeading(), _gyro));
+    // leftStick.button(7).onTrue(new InstantCommand(() -> _gyro.zeroNavHeading(), _gyro));
 
-     rightStick.button(3).toggleOnTrue(new ConditionalCommand(
+    //  rightStick.button(3).toggleOnTrue(new ConditionalCommand(
+    //      new InstantCommand(() -> _drive.setDriveModeBrake()),
+    //      new InstantCommand(() -> _drive.setDriveModeCoast()),
+    //      () -> _drive.toggleMode()
+    //    )
+    //   );
+
+      xboxController.povDown().onTrue(new InstantCommand(() -> _gyro.zeroNavHeading(), _gyro));
+
+      xboxController.x().toggleOnTrue(new ConditionalCommand(
          new InstantCommand(() -> _drive.setDriveModeBrake()),
          new InstantCommand(() -> _drive.setDriveModeCoast()),
          () -> _drive.toggleMode()

@@ -392,7 +392,7 @@ public class Drive extends SubsystemBase {
 	}
 
 	public SwerveModuleState[] getModuleStates(){
-		SwerveModuleState [] states = new SwerveModuleState[3];
+		SwerveModuleState [] states = new SwerveModuleState[4];
 		states[0] = frontLeft.getState();
 		states[1] = frontRight.getState();
 		states[2] = backLeft.getState();
