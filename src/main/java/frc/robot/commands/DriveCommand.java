@@ -87,9 +87,12 @@ public class DriveCommand extends Command {
     double stickOmega;
 
     if (xboxController != null) {
-      stickForward = -this.xboxController.getLeftY();
-      stickStrafe = -this.xboxController.getLeftX();
-      stickOmega = -this.xboxController.getRightX();
+      stickForward = -this.xboxController.getLeftY() * 0.25;
+      stickStrafe = -this.xboxController.getLeftX() * 0.25;
+      stickOmega = -this.xboxController.getRightX() * 0.25;
+      // stickForward = -this.xboxController.getLeftY();
+      // stickStrafe = -this.xboxController.getLeftX();
+      // stickOmega = -this.xboxController.getRightX();
     } else {
       stickForward = -this.leftStick.getY();
       stickStrafe = -this.leftStick.getX();
@@ -129,7 +132,7 @@ public class DriveCommand extends Command {
       omega = 0.0;
     boolean stickFieldCentric;
     if(xboxController != null) {
-      stickFieldCentric = xboxController.a().getAsBoolean();
+      stickFieldCentric = xboxController.leftBumper().getAsBoolean();
     }else {
       stickFieldCentric = leftStick.trigger().getAsBoolean();
     }

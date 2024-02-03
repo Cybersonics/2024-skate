@@ -72,28 +72,28 @@ public class Drive extends SubsystemBase {
 				invertSteer, DriveConstants.BackRight_ENCODER, DriveConstants.backRight);
 
 		odometer = new SwerveDriveOdometry(DriveConstants.FrameConstants.kDriveKinematics,
-		this._gyro.getNavXRotation2D(), getPositions());
+				this._gyro.getNavXRotation2D(), getPositions());
 
 		// Configure AutoBuilder
 		AutoBuilder.configureHolonomic(
-			this::getPose, 
-			this::resetPose, 
-			this::getSpeeds, 
-			this::driveRobotRelative, 
-			DriveConstants.pathFollowerConfig,
-			() -> {
-          	// Boolean supplier that controls when the path will be mirrored for the red alliance
-          	// This will flip the path being followed to the red side of the field.
-          	// THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+				this::getPose,
+				this::resetPose,
+				this::getSpeeds,
+				this::driveRobotRelative,
+				DriveConstants.pathFollowerConfig,
+				() -> {
+					// Boolean supplier that controls when the path will be mirrored for the red alliance
+					// This will flip the path being followed to the red side of the field.
+					// THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-          	var alliance = DriverStation.getAlliance();
-          	if (alliance.isPresent()) {
-            	return alliance.get() == DriverStation.Alliance.Red;
-          	}
-          	return false;
-      		},
-			this
-		);
+					var alliance = DriverStation.getAlliance();
+					if (alliance.isPresent()) {
+						return alliance.get() == DriverStation.Alliance.Red;
+					}
+					return false;
+				},
+				this
+			);
 
 	}
 
@@ -108,29 +108,29 @@ public class Drive extends SubsystemBase {
 	}
 
 	public ChassisSpeeds getSpeeds() {
-    	return DriveConstants.FrameConstants.kDriveKinematics.toChassisSpeeds(getModuleStates());
-  	}
+		return DriveConstants.FrameConstants.kDriveKinematics.toChassisSpeeds(getModuleStates());
+	}
 
-	  public void driveFieldRelative(ChassisSpeeds fieldRelativeSpeeds) {
+	public void driveFieldRelative(ChassisSpeeds fieldRelativeSpeeds) {
 		driveRobotRelative(ChassisSpeeds.fromFieldRelativeSpeeds(fieldRelativeSpeeds, getPose().getRotation()));
 	}
 
-	  public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
+	public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {	
 		ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
-	
+
 		SwerveModuleState[] targetStates = DriveConstants.FrameConstants.kDriveKinematics.toSwerveModuleStates(targetSpeeds);
 		setModuleStates(targetStates);
-	  }
+	}
 
 	public void resetOdometry(Pose2d pose) {
 		odometer.resetPosition(this._gyro.getRotation2d(), getPositions(), pose);
 	}
 
 	// public void resetOdometryForState(PathPlannerState state) {
-	// 	state = PathPlannerTrajectory.transformStateForAlliance(state, DriverStation.getAlliance());
-	// 	Pose2d pose = new Pose2d(state.poseMeters.getTranslation(), state.holonomicRotation);
-	// 	odometer.resetPosition(this._gyro.getRotation2d(), getPositions(), pose);
-	//   }
+	// state = PathPlannerTrajectory.transformStateForAlliance(state, DriverStation.getAlliance());
+	// Pose2d pose = new Pose2d(state.poseMeters.getTranslation(), state.holonomicRotation);
+	// odometer.resetPosition(this._gyro.getRotation2d(), getPositions(), pose);
+	// }
 
 	public static Drive getInstance(NavXGyro gyro) {
 		if (instance == null) {
@@ -245,9 +245,9 @@ public class Drive extends SubsystemBase {
 		 */
 		double maxSpeed = Collections.max(Arrays.asList(speedFL, speedBL, speedFR, speedBR, 1.0));
 
-		//SmartDashboard.putNumber("angleLF", angleFL);
-		//SmartDashboard.putNumber("speedLF", speedFL);
-		//SmartDashboard.putNumber("CurAngle FL", frontLeft.getSteerEncDeg());
+		// SmartDashboard.putNumber("angleLF", angleFL);
+		// SmartDashboard.putNumber("speedLF", speedFL);
+		// SmartDashboard.putNumber("CurAngle FL", frontLeft.getSteerEncDeg());
 		// SmartDashboard.putNumber("angleRF", angleFR);
 		// SmartDashboard.putNumber("speedRF", speedFR);
 		// SmartDashboard.putNumber("CurAngle FR", frontRight.getSteerEncDeg());
@@ -383,16 +383,16 @@ public class Drive extends SubsystemBase {
 	}
 
 	public void setModuleStates(SwerveModuleState[] desiredStates) {
-		SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates,
-				DriveConstants.FrameConstants.kPhysicalMaxSpeedMetersPerSecond / 2);
-		frontLeft.setDesiredState(desiredStates[0]);
-		frontRight.setDesiredState(desiredStates[1]);
-		backLeft.setDesiredState(desiredStates[2]);
-		backRight.setDesiredState(desiredStates[3]);
+			SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates,
+					DriveConstants.FrameConstants.kPhysicalMaxSpeedMetersPerSecond / 2);
+			frontLeft.setDesiredState(desiredStates[0]);
+			frontRight.setDesiredState(desiredStates[1]);
+			backLeft.setDesiredState(desiredStates[2]);
+			backRight.setDesiredState(desiredStates[3]);
 	}
 
-	public SwerveModuleState[] getModuleStates(){
-		SwerveModuleState [] states = new SwerveModuleState[4];
+	public SwerveModuleState[] getModuleStates() {
+		SwerveModuleState[] states = new SwerveModuleState[4];
 		states[0] = frontLeft.getState();
 		states[1] = frontRight.getState();
 		states[2] = backLeft.getState();

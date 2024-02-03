@@ -8,7 +8,8 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.NavXGyro;
-
+import frc.robot.subsystems.sparkFlexMotor;
+import frc.robot.subsystems.sparkMaxMotor;
 import frc.robot.commands.Autos;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -21,7 +22,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -43,7 +43,9 @@ public class RobotContainer {
   // The robot's subsystems
   public static NavXGyro _gyro = NavXGyro.getInstance(); // This must be called before Drive as it is used by the Drive
   public static Drive _drive = Drive.getInstance(_gyro);
-  
+  // public static sparkMaxMotor _sparkMotor = sparkMaxMotor.getInstance(30);
+  // public static sparkFlexMotor _flexMotor = sparkFlexMotor.getInstance(31, 32);
+
   // public final CommandJoystick leftStick = new CommandJoystick(OperatorConstants.LeftStick);
   // public final CommandJoystick rightStick = new CommandJoystick(OperatorConstants.RightStick);
 
@@ -51,7 +53,7 @@ public class RobotContainer {
 
   // Setup Sendable chooser for picking autonomous program in SmartDashboard
   private SendableChooser<Command> m_chooser = new SendableChooser<>();
-  
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -62,19 +64,15 @@ public class RobotContainer {
     NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
     NamedCommands.registerCommand("print hello", Commands.print("hello"));
 
-
     CommandScheduler.getInstance()
-      //.setDefaultCommand(_drive, new DriveCommand(_drive, driveController, _gyro));
-      // .setDefaultCommand(_drive, new DriveCommand(_drive, leftStick, rightStick, _gyro));      
-      .setDefaultCommand(_drive, new DriveCommand(_drive, xboxController, _gyro));
-
-
+         // .setDefaultCommand(_drive, new DriveCommand(_drive, leftStick, rightStick, _gyro));
+        .setDefaultCommand(_drive, new DriveCommand(_drive, xboxController, _gyro));
 
     // Configure Autonomous Options
     autonomousOptions();
 
     // Configure the trigger bindings
-    configureBindings(); 
+    configureBindings();
 
   }
 
@@ -96,21 +94,33 @@ public class RobotContainer {
     // Reset NavX
     // leftStick.button(7).onTrue(new InstantCommand(() -> _gyro.zeroNavHeading(), _gyro));
 
-    //  rightStick.button(3).toggleOnTrue(new ConditionalCommand(
-    //      new InstantCommand(() -> _drive.setDriveModeBrake()),
-    //      new InstantCommand(() -> _drive.setDriveModeCoast()),
-    //      () -> _drive.toggleMode()
-    //    )
-    //   );
+    // rightStick.button(3).toggleOnTrue(new ConditionalCommand(
+    // new InstantCommand(() -> _drive.setDriveModeBrake()),
+    // new InstantCommand(() -> _drive.setDriveModeCoast()),
+    // () -> _drive.toggleMode()
+    // )
+    // );
 
-      xboxController.povDown().onTrue(new InstantCommand(() -> _gyro.zeroNavHeading(), _gyro));
+    // xboxController.y().onTrue(new InstantCommand(() -> _sparkMotor.setSpeed(1)));
+    // xboxController.y().onFalse(new InstantCommand(() -> _sparkMotor.setSpeed(0)));
 
-      xboxController.x().toggleOnTrue(new ConditionalCommand(
-         new InstantCommand(() -> _drive.setDriveModeBrake()),
-         new InstantCommand(() -> _drive.setDriveModeCoast()),
-         () -> _drive.toggleMode()
-       )
-      );
+    // xboxController.x().onTrue(new InstantCommand(() -> _sparkMotor.setSpeed(-1)));
+    // xboxController.x().onFalse(new InstantCommand(() -> _sparkMotor.setSpeed(0.0)));
+
+    // xboxController.a().onTrue(new InstantCommand(() -> _flexMotor.setSpeed(1)));
+    // xboxController.a().onFalse(new InstantCommand(() -> _flexMotor.setSpeed(0)));
+
+    // xboxController.b().onTrue(new InstantCommand(() -> _flexMotor.setSpeed(-1)));
+    // xboxController.b().onFalse(new InstantCommand(() -> _flexMotor.setSpeed(0.0)));
+
+    xboxController.povDown().onTrue(new InstantCommand(() -> _gyro.zeroNavHeading(), _gyro));
+
+    xboxController.povUp().toggleOnTrue(new ConditionalCommand(
+      new InstantCommand(() -> _drive.setDriveModeBrake()),
+      new InstantCommand(() -> _drive.setDriveModeCoast()),
+      () -> _drive.toggleMode()
+      )
+    );
   }
 
   /**
@@ -142,7 +152,7 @@ public class RobotContainer {
     // m_chooser.addOption("Blue Barrier Cone Ramp", Autos.blueBarrierConeRamp(_drive, _gyro, _intake, _arm));
     // m_chooser.addOption("DO NOT RUN - Jeremy Only", Autos.centerRampCubeTest(_drive, _gyro, _arm, _intake));
 
-    
+
     // Put the chooser on the dashboard
     //SmartDashboard.putData(m_chooser);
   }
