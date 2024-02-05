@@ -11,20 +11,27 @@ public class sparkFlexMotor extends SubsystemBase {
     private static sparkFlexMotor instance;
     private CANSparkFlex motorOne;    
     private CANSparkFlex motorTwo;
-
+    
+    public sparkFlexMotor(int idCANOne) {
+        motorOne = new CANSparkFlex(idCANOne, MotorType.kBrushless);        
+        motorOne.restoreFactoryDefaults();
+        motorOne.setIdleMode(IdleMode.kCoast);
+        // motorOne.setInverted(invertDrive);
+        // motorOne.setSmartCurrentLimit(40);
+    }
 
     public sparkFlexMotor(int idCANOne, int idCANTwo) {
         motorOne = new CANSparkFlex(idCANOne, MotorType.kBrushless);        
         motorOne.restoreFactoryDefaults();
         motorOne.setIdleMode(IdleMode.kCoast);
         // motorOne.setInverted(invertDrive);
-        motorOne.setSmartCurrentLimit(40);
+        // motorOne.setSmartCurrentLimit(40);
 
         motorTwo = new CANSparkFlex(idCANTwo, MotorType.kBrushless);
         motorTwo.restoreFactoryDefaults();
         motorTwo.setIdleMode(IdleMode.kCoast);
         // motorTwo.setInverted(invertDrive);
-        motorTwo.setSmartCurrentLimit(40);
+        // motorTwo.setSmartCurrentLimit(40);
     }
 
     public static sparkFlexMotor getInstance(int idCANOne, int idCANTwo) {
@@ -35,8 +42,10 @@ public class sparkFlexMotor extends SubsystemBase {
     }
 
     public void setSpeed(double speed) {
-        motorOne.set(speed);        
-        motorTwo.set(speed);
+        motorOne.set(speed); 
+        if(motorTwo != null) {       
+            motorTwo.set(speed);
+        }
     }
 
     private boolean isCoastMode = false;

@@ -169,5 +169,4 @@ public final class Constants {
       this.rowPos = rowPos;
     }
   }
-
 }

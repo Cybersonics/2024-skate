@@ -43,8 +43,9 @@ public class RobotContainer {
   // The robot's subsystems
   public static NavXGyro _gyro = NavXGyro.getInstance(); // This must be called before Drive as it is used by the Drive
   public static Drive _drive = Drive.getInstance(_gyro);
-  // public static sparkMaxMotor _sparkMotor = sparkMaxMotor.getInstance(30);
-  // public static sparkFlexMotor _flexMotor = sparkFlexMotor.getInstance(31, 32);
+  public static sparkMaxMotor _sparkMotor = sparkMaxMotor.getInstance(30);
+  public static sparkFlexMotor _launcherFlexMotor = new sparkFlexMotor(31, 32);
+  public static sparkFlexMotor _feederFlexMotor = new sparkFlexMotor(33);
 
   // public final CommandJoystick leftStick = new CommandJoystick(OperatorConstants.LeftStick);
   // public final CommandJoystick rightStick = new CommandJoystick(OperatorConstants.RightStick);
@@ -101,17 +102,14 @@ public class RobotContainer {
     // )
     // );
 
-    // xboxController.y().onTrue(new InstantCommand(() -> _sparkMotor.setSpeed(1)));
-    // xboxController.y().onFalse(new InstantCommand(() -> _sparkMotor.setSpeed(0)));
+    xboxController.y().onTrue(new InstantCommand(() -> _sparkMotor.setSpeed(-1)));
+    xboxController.y().onFalse(new InstantCommand(() -> _sparkMotor.setSpeed(0)));
 
-    // xboxController.x().onTrue(new InstantCommand(() -> _sparkMotor.setSpeed(-1)));
-    // xboxController.x().onFalse(new InstantCommand(() -> _sparkMotor.setSpeed(0.0)));
+    xboxController.a().onTrue(new InstantCommand(() -> _launcherFlexMotor.setSpeed(.85)));
+    xboxController.a().onFalse(new InstantCommand(() -> _launcherFlexMotor.setSpeed(0)));
 
-    // xboxController.a().onTrue(new InstantCommand(() -> _flexMotor.setSpeed(1)));
-    // xboxController.a().onFalse(new InstantCommand(() -> _flexMotor.setSpeed(0)));
-
-    // xboxController.b().onTrue(new InstantCommand(() -> _flexMotor.setSpeed(-1)));
-    // xboxController.b().onFalse(new InstantCommand(() -> _flexMotor.setSpeed(0.0)));
+    xboxController.b().onTrue(new InstantCommand(() -> _feederFlexMotor.setSpeed(1)));
+    xboxController.b().onFalse(new InstantCommand(() -> _feederFlexMotor.setSpeed(0.0)));
 
     xboxController.povDown().onTrue(new InstantCommand(() -> _gyro.zeroNavHeading(), _gyro));
 
